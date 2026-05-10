@@ -1,0 +1,279 @@
+// =============================================================================
+// Chile Histórico - Prisma Schema
+// PostgreSQL 16 + extensión PostGIS
+// =============================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis, pg_trgm]
+}
+
+// -----------------------------------------------------------------------------
+// AUTH (NextAuth.js v5 / Auth.js)
+// -----------------------------------------------------------------------------
+
+model User {
+  id            String           @id @default(cuid())
+  email         String           @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  role          UserRole         @default(VIEWER)
+  accounts      Account[]
+  sessions      Session[]
+  contributions HistoricalEvent[] @relation("CreatedBy")
+  curated       HistoricalEvent[] @relation("CuratedBy")
+  approvedRecreations AiRecreation[] @relation("ApprovedBy")
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserRole {
+  VIEWER
+  CONTRIBUTOR
+  CURATOR
+  ADMIN
+}
+
+// -----------------------------------------------------------------------------
+// EVENTOS HISTÓRICOS (núcleo del modelo)
+// -----------------------------------------------------------------------------
+
+model HistoricalEvent {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  shortDesc   String        @db.Text
+  longDesc    String        @db.Text
+
+  yearStart   Int           // negativo para aC (ej. -1500)
+  yearEnd     Int?          // null si es evento puntual
+  dateText    String?       // texto narrativo: "12 de febrero de 1818"
+
+  category    EventCategory
+  era         HistoricalEra
+
+  latitude    Float
+  longitude   Float
+  zoneGeoJson Json?         // GeoJSON Polygon opcional para zonas
+  region      String        // región chilena
+  comuna      String?
+
+  status      EventStatus   @default(DRAFT)
+
+  sources     Source[]
+  media       MediaAsset[]
+  recreations AiRecreation[]
+  narration   AudioNarration?
+
+  createdById String
+  createdBy   User          @relation("CreatedBy", fields: [createdById], references: [id])
+  curatedById String?
+  curatedBy   User?         @relation("CuratedBy", fields: [curatedById], references: [id])
+  curatedAt   DateTime?
+
+  views       Int           @default(0)
+  featured    Boolean       @default(false)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([yearStart, yearEnd])
+  @@index([category])
+  @@index([era])
+  @@index([region])
+  @@index([status])
+  @@index([slug])
+}
+
+enum EventCategory {
+  BATALLA
+  FUNDACION
+  DESASTRE_NATURAL
+  PATRIMONIO
+  PUEBLOS_ORIGINARIOS
+  POLITICA
+  CULTURA
+  ECONOMIA
+  RELIGION
+  TRANSPORTE
+  CIENCIA
+}
+
+enum HistoricalEra {
+  PREHISPANICA       // antes 1520
+  CONQUISTA          // 1520-1600
+  COLONIA            // 1600-1810
+  INDEPENDENCIA      // 1810-1830
+  REPUBLICA_TEMPRANA // 1830-1891
+  PARLAMENTARISMO    // 1891-1925
+  PRESIDENCIALISMO   // 1925-1973
+  DICTADURA          // 1973-1990
+  TRANSICION         // 1990-presente
+}
+
+enum EventStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+// -----------------------------------------------------------------------------
+// FUENTES BIBLIOGRÁFICAS
+// -----------------------------------------------------------------------------
+
+model Source {
+  id             String          @id @default(cuid())
+  eventId        String
+  event          HistoricalEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  type           SourceType
+  title          String
+  author         String?
+  year           Int?
+  url            String?
+  signature      String?         // signatura BN, ej. "BN-MS-12345"
+  citation       String          @db.Text
+  inPublicDomain Boolean         @default(false)
+  licenseInfo    String?
+  createdAt      DateTime        @default(now())
+
+  @@index([eventId])
+  @@index([type])
+}
+
+enum SourceType {
+  BIBLIOTECA_NACIONAL
+  MEMORIA_CHILENA
+  ARCHIVO_NACIONAL
+  WIKIPEDIA
+  ACADEMIC_PAPER
+  BOOK
+  PRIMARY_DOCUMENT
+  OTHER
+}
+
+// -----------------------------------------------------------------------------
+// MEDIA (fotos, videos, scans)
+// -----------------------------------------------------------------------------
+
+model MediaAsset {
+  id           String          @id @default(cuid())
+  eventId      String
+  event        HistoricalEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  type         MediaType
+  url          String          // URL R2 pública
+  thumbnailUrl String?
+  caption      String?         @db.Text
+  yearTaken    Int?
+  attribution  String          // obligatoria para BN/MC
+  isHistorical Boolean         @default(true)
+  fileSize     Int?
+  width        Int?
+  height       Int?
+  createdAt    DateTime        @default(now())
+
+  @@index([eventId])
+  @@index([type])
+}
+
+enum MediaType {
+  PHOTO_HISTORIC
+  PHOTO_MODERN
+  ILLUSTRATION
+  DOCUMENT_SCAN
+  AUDIO
+  VIDEO
+}
+
+// -----------------------------------------------------------------------------
+// RECREACIONES IA
+// -----------------------------------------------------------------------------
+
+model AiRecreation {
+  id             String           @id @default(cuid())
+  eventId        String
+  event          HistoricalEvent  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  targetYear     Int
+  prompt         String           @db.Text
+  negativePrompt String?          @db.Text
+  imageUrl       String?          // R2 URL (null mientras genera)
+  thumbnailUrl   String?
+  model          String           // ej. "flux-schnell"
+  status         RecreationStatus @default(PENDING)
+  errorMsg       String?
+  generationCost Float?           // USD para tracking
+  approvedAt     DateTime?
+  approvedById   String?
+  approvedBy     User?            @relation("ApprovedBy", fields: [approvedById], references: [id])
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@unique([eventId, targetYear])
+  @@index([status])
+  @@index([eventId])
+}
+
+enum RecreationStatus {
+  PENDING
+  GENERATING
+  COMPLETED
+  FAILED
+  REJECTED
+}
+
+// -----------------------------------------------------------------------------
+// AUDIO NARRACIONES (TTS)
+// -----------------------------------------------------------------------------
+
+model AudioNarration {
+  id        String          @id @default(cuid())
+  eventId   String          @unique
+  event     HistoricalEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  url       String          // R2 URL
+  duration  Int             // segundos
+  voice     String          // identificador voz TTS
+  language  String          @default("es-CL")
+  text      String          @db.Text
+  createdAt DateTime        @default(now())
+}

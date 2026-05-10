@@ -1,0 +1,39 @@
+{
+  "name": "chile-historico",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mapa interactivo de eventos históricos de Chile con recreaciones IA",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.10.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter web start",
+    "worker": "pnpm --filter worker start",
+    "lint": "pnpm -r lint",
+    "type-check": "pnpm -r type-check",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter web test:e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "db:generate": "pnpm --filter @chile-historico/db generate",
+    "db:migrate": "pnpm --filter @chile-historico/db migrate",
+    "db:migrate:deploy": "pnpm --filter @chile-historico/db migrate:deploy",
+    "db:push": "pnpm --filter @chile-historico/db push",
+    "db:studio": "pnpm --filter @chile-historico/db studio",
+    "seed": "pnpm --filter @chile-historico/ingest seed",
+    "clean": "pnpm -r exec rm -rf .next dist node_modules .turbo"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.15",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "typescript": "^5.5.4"
+  }
+}

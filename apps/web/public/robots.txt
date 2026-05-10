@@ -1,0 +1,6 @@
+# Robots config dinámico vía src/app/robots.ts; este archivo es fallback.
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Sitemap: https://chilehistorico.cl/sitemap.xml

@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Paleta archivo histórico digital */
+    --bg-primary: 36 11% 5%;       /* #0F0E0C */
+    --bg-secondary: 33 16% 9%;     /* #1A1814 */
+    --bg-card: 32 19% 12%;         /* #252118 */
+    --paper: 42 47% 85%;           /* #E8DFC8 */
+    --paper-aged: 39 42% 67%;      /* #C9B98F */
+
+    --accent-gold: 41 53% 58%;     /* #C9A75C */
+    --accent-rust: 14 64% 33%;     /* #8B3A1F */
+    --accent-blue: 200 35% 27%;    /* #2C4A5C */
+
+    --text-primary: 41 51% 92%;    /* #F5EFE0 */
+    --text-secondary: 36 24% 58%;  /* #A89880 */
+    --border: 35 24% 20%;          /* #3D3528 */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-bg-primary text-text-primary font-sans;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1,
+      'kern' 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent-gold/30 text-paper;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--bg-secondary));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--accent-gold));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .paper-bg {
+    background-image:
+      radial-gradient(at 20% 10%, hsl(var(--bg-secondary)) 0%, transparent 60%),
+      radial-gradient(at 80% 90%, hsl(var(--bg-card)) 0%, transparent 70%),
+      linear-gradient(180deg, hsl(var(--bg-primary)) 0%, hsl(var(--bg-secondary)) 100%);
+  }
+
+  .editorial-prose {
+    @apply font-display text-lg leading-relaxed text-text-primary;
+  }
+
+  .editorial-prose p {
+    @apply mb-4;
+  }
+
+  .editorial-prose p::first-letter {
+    @apply font-display text-4xl float-left mr-2 mt-1 text-accent-gold;
+  }
+}
+
+/* Mapbox overrides para tono sepia */
+.mapboxgl-canvas {
+  filter: sepia(0.18) saturate(0.85) brightness(0.92);
+}
+
+.mapboxgl-ctrl-attrib {
+  background: rgba(15, 14, 12, 0.7) !important;
+  color: hsl(var(--text-secondary)) !important;
+  font-size: 10px !important;
+}
+
+.mapboxgl-ctrl-attrib a {
+  color: hsl(var(--accent-gold)) !important;
+}
+
+.mapboxgl-popup-content {
+  background: hsl(var(--bg-card)) !important;
+  color: hsl(var(--text-primary)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 2px !important;
+  font-family: inherit !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: hsl(var(--bg-card)) !important;
+}

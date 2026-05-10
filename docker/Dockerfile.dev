@@ -1,0 +1,9 @@
+# Imagen unificada para desarrollo local con hot reload.
+# Usar con docker-compose.yml (no en producción).
+
+FROM node:20-alpine
+RUN apk add --no-cache libc6-compat vips
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
+WORKDIR /app
+
+CMD ["pnpm", "dev"]
