@@ -114,7 +114,7 @@ export default async function EventPage({ params }: Props) {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 pt-2">
-              <EventNarration eventId={event.id} hasExisting={!!event.narration} />
+              <EventNarration eventSlug={event.slug} hasExisting={!!event.narration} />
               <ShareButton title={event.title} slug={event.slug} />
             </div>
 

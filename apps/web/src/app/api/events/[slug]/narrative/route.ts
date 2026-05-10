@@ -11,7 +11,7 @@ const TTL_30_DAYS = 60 * 60 * 24 * 30
 
 export async function POST(
   _request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: { slug: string } },
 ) {
   const ip = headers().get('x-forwarded-for') ?? 'anon'
   const rl = await checkRateLimit({ identifier: `narrative:${ip}`, limit: 10, windowSeconds: 60 })
@@ -19,15 +19,15 @@ export async function POST(
     return NextResponse.json({ error: 'Demasiadas solicitudes' }, { status: 429 })
   }
 
-  const cacheKey = `narrative:${params.id}`
-  const cached = await cacheGet<{ text: string; model: string }>(cacheKey)
-  if (cached) return NextResponse.json({ ...cached, cached: true })
-
   const event = await prisma.historicalEvent.findUnique({
-    where: { id: params.id },
+    where: { slug: params.slug },
     include: { sources: true },
   })
   if (!event) return NextResponse.json({ error: 'Evento no encontrado' }, { status: 404 })
+
+  const cacheKey = `narrative:${event.id}`
+  const cached = await cacheGet<{ text: string; model: string }>(cacheKey)
+  if (cached) return NextResponse.json({ ...cached, cached: true })
 
   const result = await generateNarrative(
     {

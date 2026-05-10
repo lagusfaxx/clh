@@ -4,11 +4,11 @@ import { Headphones, Loader2, Pause, Play } from 'lucide-react'
 import { Button } from '@chile-historico/ui'
 
 interface Props {
-  eventId: string
+  eventSlug: string
   hasExisting: boolean
 }
 
-export function EventNarration({ eventId, hasExisting }: Props) {
+export function EventNarration({ eventSlug, hasExisting }: Props) {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [playing, setPlaying] = useState(false)
@@ -19,7 +19,7 @@ export function EventNarration({ eventId, hasExisting }: Props) {
     try {
       let url: string | null = null
       if (hasExisting) {
-        const res = await fetch(`/api/events/${eventId}/narration`)
+        const res = await fetch(`/api/events/${eventSlug}/narration`)
         if (res.ok) {
           const data = await res.json()
           url = data.url ?? null
@@ -27,7 +27,7 @@ export function EventNarration({ eventId, hasExisting }: Props) {
       }
 
       if (!url) {
-        const res = await fetch(`/api/events/${eventId}/narration`, { method: 'POST' })
+        const res = await fetch(`/api/events/${eventSlug}/narration`, { method: 'POST' })
         if (res.ok) {
           const data = await res.json()
           url = data.url ?? null
