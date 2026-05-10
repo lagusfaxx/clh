@@ -17,24 +17,23 @@ export interface GeoEventFeature {
 }
 
 export function useEventsGeo() {
-  const filters = useMapStore((s) => ({
-    yearFrom: s.yearFrom,
-    yearTo: s.yearTo,
-    categories: s.categories,
-    eras: s.eras,
-    regions: s.regions,
-    withHistoricMedia: s.withHistoricMedia,
-    withRecreation: s.withRecreation,
-  }))
+  // Selectores individuales para evitar re-renders por identidad de objeto
+  const yearFrom = useMapStore((s) => s.yearFrom)
+  const yearTo = useMapStore((s) => s.yearTo)
+  const categories = useMapStore((s) => s.categories)
+  const eras = useMapStore((s) => s.eras)
+  const regions = useMapStore((s) => s.regions)
+  const withHistoricMedia = useMapStore((s) => s.withHistoricMedia)
+  const withRecreation = useMapStore((s) => s.withRecreation)
 
   const params = new URLSearchParams()
-  params.set('yearFrom', String(filters.yearFrom))
-  params.set('yearTo', String(filters.yearTo))
-  if (filters.categories.length) params.set('categories', filters.categories.join(','))
-  if (filters.eras.length) params.set('eras', filters.eras.join(','))
-  if (filters.regions.length) params.set('regions', filters.regions.join(','))
-  if (filters.withHistoricMedia) params.set('withHistoricMedia', '1')
-  if (filters.withRecreation) params.set('withRecreation', '1')
+  params.set('yearFrom', String(yearFrom))
+  params.set('yearTo', String(yearTo))
+  if (categories.length) params.set('categories', categories.join(','))
+  if (eras.length) params.set('eras', eras.join(','))
+  if (regions.length) params.set('regions', regions.join(','))
+  if (withHistoricMedia) params.set('withHistoricMedia', '1')
+  if (withRecreation) params.set('withRecreation', '1')
 
   return useQuery<{ features: GeoEventFeature[] }>({
     queryKey: ['events-geo', params.toString()],

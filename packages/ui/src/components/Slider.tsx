@@ -3,19 +3,28 @@ import * as React from 'react'
 import * as SliderPrimitive from '@radix-ui/react-slider'
 import { cn } from '../cn'
 
+const THUMB_CLASS =
+  'block h-5 w-5 rounded-full border-2 border-accent-gold bg-bg-primary ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-gold/50 disabled:pointer-events-none disabled:opacity-50'
+
 export const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
 >(({ className, ...props }, ref) => {
-  // Capturar el N de thumbs UNA sola vez al montar para evitar
-  // que mapear sobre props.value (cuya identidad cambia en cada render)
-  // dispare un loop infinito de setRef en Radix.
-  const thumbCountRef = React.useRef(
-    Array.isArray(props.value)
-      ? props.value.length
-      : Array.isArray(props.defaultValue)
-        ? props.defaultValue.length
-        : 1,
+  // Determinar el conteo a partir del LENGTH (number primitivo).
+  // Como dependencia primitiva, useMemo solo se re-ejecuta si el length
+  // cambia — no si la identidad del array cambia.
+  const valueLength = Array.isArray(props.value) ? props.value.length : 0
+  const defaultLength = Array.isArray(props.defaultValue)
+    ? props.defaultValue.length
+    : 0
+  const thumbCount = valueLength || defaultLength || 1
+
+  const thumbs = React.useMemo(
+    () =>
+      Array.from({ length: thumbCount }, (_, i) => (
+        <SliderPrimitive.Thumb key={i} className={THUMB_CLASS} />
+      )),
+    [thumbCount],
   )
 
   return (
@@ -27,12 +36,7 @@ export const Slider = React.forwardRef<
       <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-bg-secondary">
         <SliderPrimitive.Range className="absolute h-full bg-accent-gold" />
       </SliderPrimitive.Track>
-      {Array.from({ length: thumbCountRef.current }, (_, i) => (
-        <SliderPrimitive.Thumb
-          key={i}
-          className="block h-5 w-5 rounded-full border-2 border-accent-gold bg-bg-primary ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-gold/50 disabled:pointer-events-none disabled:opacity-50"
-        />
-      ))}
+      {thumbs}
     </SliderPrimitive.Root>
   )
 })

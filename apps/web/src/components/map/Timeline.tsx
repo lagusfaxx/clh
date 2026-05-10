@@ -14,11 +14,9 @@ const PRESETS: Array<{ label: string; from: number; to: number }> = [
 ]
 
 export function Timeline() {
-  const { yearFrom, yearTo, setYearRange } = useMapStore((s) => ({
-    yearFrom: s.yearFrom,
-    yearTo: s.yearTo,
-    setYearRange: s.setYearRange,
-  }))
+  const yearFrom = useMapStore((s) => s.yearFrom)
+  const yearTo = useMapStore((s) => s.yearTo)
+  const setYearRange = useMapStore((s) => s.setYearRange)
 
   return (
     <div className="absolute inset-x-2 bottom-2 z-10 rounded-sm border border-border bg-bg-card/95 p-3 shadow-paper backdrop-blur md:inset-x-12 md:bottom-6 md:p-4">
