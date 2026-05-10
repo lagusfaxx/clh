@@ -48,34 +48,34 @@ export async function findEventsInBBox(params: {
     limit = 5000,
   } = params
 
-  const where: string[] = [`"status" = 'PUBLISHED'`]
+  const where: string[] = [`e."status" = 'PUBLISHED'`]
   const values: unknown[] = []
 
   if (bbox) {
     values.push(bbox.west, bbox.south, bbox.east, bbox.north)
     where.push(
-      `"location" && ST_MakeEnvelope($${values.length - 3}, $${values.length - 2}, $${values.length - 1}, $${values.length}, 4326)`,
+      `e."location" && ST_MakeEnvelope($${values.length - 3}, $${values.length - 2}, $${values.length - 1}, $${values.length}, 4326)`,
     )
   }
   if (typeof yearFrom === 'number') {
     values.push(yearFrom)
-    where.push(`COALESCE("yearEnd", "yearStart") >= $${values.length}`)
+    where.push(`COALESCE(e."yearEnd", e."yearStart") >= $${values.length}`)
   }
   if (typeof yearTo === 'number') {
     values.push(yearTo)
-    where.push(`"yearStart" <= $${values.length}`)
+    where.push(`e."yearStart" <= $${values.length}`)
   }
   if (categories && categories.length > 0) {
     values.push(categories)
-    where.push(`"category" = ANY($${values.length}::"EventCategory"[])`)
+    where.push(`e."category" = ANY($${values.length}::"EventCategory"[])`)
   }
   if (eras && eras.length > 0) {
     values.push(eras)
-    where.push(`"era" = ANY($${values.length}::"HistoricalEra"[])`)
+    where.push(`e."era" = ANY($${values.length}::"HistoricalEra"[])`)
   }
   if (regions && regions.length > 0) {
     values.push(regions)
-    where.push(`"region" = ANY($${values.length}::text[])`)
+    where.push(`e."region" = ANY($${values.length}::text[])`)
   }
 
   const mediaJoin = onlyWithHistoricMedia
