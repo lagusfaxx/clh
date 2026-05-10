@@ -23,10 +23,20 @@ const mono = JetBrains_Mono({
   display: 'swap',
 })
 
+function safeBaseUrl(): URL {
+  const candidate = process.env.NEXTAUTH_URL?.trim()
+  if (candidate) {
+    try {
+      return new URL(candidate)
+    } catch {
+      // intentional fallthrough
+    }
+  }
+  return new URL('http://localhost:3000')
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXTAUTH_URL ?? 'https://chilehistorico.cl',
-  ),
+  metadataBase: safeBaseUrl(),
   title: {
     default: 'Chile Histórico — Mapa interactivo de la historia de Chile',
     template: '%s · Chile Histórico',
