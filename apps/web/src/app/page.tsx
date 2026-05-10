@@ -2,6 +2,7 @@ import { MapView } from '@/components/map/MapView'
 import { Timeline } from '@/components/map/Timeline'
 import { FilterSidebar } from '@/components/map/FilterSidebar'
 import { EventDetailPanel } from '@/components/map/EventDetailPanel'
+import { NearbyButton } from '@/components/map/NearbyButton'
 import { SiteHeader } from '@/components/SiteHeader'
 
 export default function HomePage() {
@@ -12,6 +13,7 @@ export default function HomePage() {
         <FilterSidebar />
         <div className="absolute inset-0 left-0 md:left-[320px]">
           <MapView />
+          <NearbyButton />
           <Timeline />
         </div>
         <EventDetailPanel />

@@ -9,6 +9,8 @@
 import { prisma } from '@chile-historico/db'
 import { INITIAL_EVENTS, SEED_VERSION } from './initial-events'
 import { SANTIAGO_EVENTS } from './santiago-events'
+import { SANTIAGO_SITIOS } from './santiago-sitios'
+import { SANTIAGO_MODERNOS } from './santiago-modernos'
 
 async function getOrCreateSeedUser() {
   return prisma.user.upsert({
@@ -26,12 +28,19 @@ async function seed() {
   const args = new Set(process.argv.slice(2))
   const reset = args.has('--reset')
 
-  const ALL_EVENTS = [...INITIAL_EVENTS, ...SANTIAGO_EVENTS]
+  const ALL_EVENTS = [
+    ...INITIAL_EVENTS,
+    ...SANTIAGO_EVENTS,
+    ...SANTIAGO_SITIOS,
+    ...SANTIAGO_MODERNOS,
+  ]
 
   console.log(`\nSeed Chile Histórico v${SEED_VERSION}`)
   console.log(`Eventos a insertar: ${ALL_EVENTS.length}`)
   console.log(`  - Iniciales (curados): ${INITIAL_EVENTS.length}`)
-  console.log(`  - Santiago Metropolitana: ${SANTIAGO_EVENTS.length}\n`)
+  console.log(`  - Santiago Metropolitana: ${SANTIAGO_EVENTS.length}`)
+  console.log(`  - Sitios físicos Santiago: ${SANTIAGO_SITIOS.length}`)
+  console.log(`  - Edificios modernos / gaps: ${SANTIAGO_MODERNOS.length}\n`)
 
   if (reset) {
     console.log('--reset activado: borrando datos previos...')

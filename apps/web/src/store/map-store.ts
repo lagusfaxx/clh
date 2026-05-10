@@ -47,8 +47,16 @@ const DEFAULT_FILTERS: FilterState = {
   search: '',
 }
 
+interface UserLocation {
+  longitude: number
+  latitude: number
+  accuracy: number
+}
+
 interface MapState extends FilterState {
   selectedEventId: string | null
+  userLocation: UserLocation | null
+  flyToTarget: { longitude: number; latitude: number; zoom?: number } | null
   setSelectedEventId: (id: string | null) => void
   setYearRange: (from: number, to: number) => void
   toggleCategory: (c: EventCategory) => void
@@ -58,13 +66,19 @@ interface MapState extends FilterState {
   setWithRecreation: (v: boolean) => void
   setSearch: (q: string) => void
   resetFilters: () => void
+  setUserLocation: (loc: UserLocation | null) => void
+  setFlyToTarget: (t: MapState['flyToTarget']) => void
 }
 
 export const useMapStore = create<MapState>((set) => ({
   ...DEFAULT_FILTERS,
   selectedEventId: null,
+  userLocation: null,
+  flyToTarget: null,
 
   setSelectedEventId: (id) => set({ selectedEventId: id }),
+  setUserLocation: (loc) => set({ userLocation: loc }),
+  setFlyToTarget: (t) => set({ flyToTarget: t }),
   setYearRange: (yearFrom, yearTo) => set({ yearFrom, yearTo }),
   toggleCategory: (c) =>
     set((s) => ({

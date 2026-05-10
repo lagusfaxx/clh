@@ -84,7 +84,10 @@ export function FilterSidebar() {
                         : 'border-border bg-bg-secondary text-text-secondary hover:border-accent-gold/40'
                     }`}
                   >
-                    <span style={{ color: meta.color }}>{meta.icon}</span>
+                    <span
+                      className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: meta.color }}
+                    />
                     <span>{meta.label}</span>
                   </button>
                 )

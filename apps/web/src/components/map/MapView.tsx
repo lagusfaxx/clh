@@ -1,5 +1,5 @@
 'use client'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Map, {
   Layer,
   type MapRef,
@@ -25,6 +25,19 @@ export function MapView() {
 
   const { data, isLoading } = useEventsGeo()
   const setSelected = useMapStore((s) => s.setSelectedEventId)
+  const userLocation = useMapStore((s) => s.userLocation)
+  const flyToTarget = useMapStore((s) => s.flyToTarget)
+  const setFlyToTarget = useMapStore((s) => s.setFlyToTarget)
+
+  useEffect(() => {
+    if (!flyToTarget) return
+    mapRef.current?.flyTo({
+      center: [flyToTarget.longitude, flyToTarget.latitude],
+      zoom: flyToTarget.zoom ?? 16,
+      essential: true,
+    })
+    setFlyToTarget(null)
+  }, [flyToTarget, setFlyToTarget])
 
   const points = useMemo(() => {
     if (!data?.features) return []
@@ -152,18 +165,29 @@ export function MapView() {
               className="group relative -translate-y-1 transition-transform hover:scale-110"
             >
               <span
-                className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-bg-primary text-base shadow-warm"
+                className="block h-4 w-4 rounded-full border-2 border-bg-primary shadow-warm"
                 style={{ backgroundColor: meta?.color ?? '#C9A75C' }}
-              >
-                {meta?.icon ?? '•'}
-              </span>
+              />
               {(props.hasHistoricMedia || props.hasRecreation) && (
-                <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-accent-gold ring-2 ring-bg-primary" />
+                <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-accent-gold ring-2 ring-bg-primary" />
               )}
             </button>
           </Marker>
         )
       })}
+
+      {userLocation && (
+        <Marker
+          longitude={userLocation.longitude}
+          latitude={userLocation.latitude}
+          anchor="center"
+        >
+          <span className="relative flex h-4 w-4">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-gold opacity-60" />
+            <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-bg-primary bg-accent-gold" />
+          </span>
+        </Marker>
+      )}
 
       <Source id="events" type="geojson" data={{ type: 'FeatureCollection', features: [] }}>
         <Layer id="events-noop" type="circle" paint={{ 'circle-radius': 0 }} />
