@@ -13,6 +13,7 @@ import { clientEnv } from '@/lib/env'
 import { useEventsGeo, type GeoEventFeature } from '@/hooks/useEventsGeo'
 import { useMapStore } from '@/store/map-store'
 import { CATEGORY_META } from '@/lib/categories'
+import { MarkerShape } from './MarkerShape'
 import useSupercluster from 'use-supercluster'
 import type { BBox } from 'geojson'
 
@@ -162,15 +163,14 @@ export function MapView() {
           >
             <button
               title={props.title}
-              className="group relative -translate-y-1 transition-transform hover:scale-110"
+              className="group relative -translate-y-1 transition-transform hover:scale-125"
             >
-              <span
-                className="block h-4 w-4 rounded-full border-2 border-bg-primary shadow-warm"
-                style={{ backgroundColor: meta?.color ?? '#C9A75C' }}
+              <MarkerShape
+                shape={meta?.shape ?? 'circle'}
+                color={meta?.color ?? '#C9A75C'}
+                size={view.zoom > 12 ? 22 : view.zoom > 9 ? 18 : 14}
+                highlight={props.hasHistoricMedia || props.hasRecreation}
               />
-              {(props.hasHistoricMedia || props.hasRecreation) && (
-                <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-accent-gold ring-2 ring-bg-primary" />
-              )}
             </button>
           </Marker>
         )

@@ -11,6 +11,7 @@ import { INITIAL_EVENTS, SEED_VERSION } from './initial-events'
 import { SANTIAGO_EVENTS } from './santiago-events'
 import { SANTIAGO_SITIOS } from './santiago-sitios'
 import { SANTIAGO_MODERNOS } from './santiago-modernos'
+import { CHILE_REGIONES } from './chile-regiones'
 
 async function getOrCreateSeedUser() {
   return prisma.user.upsert({
@@ -33,6 +34,7 @@ async function seed() {
     ...SANTIAGO_EVENTS,
     ...SANTIAGO_SITIOS,
     ...SANTIAGO_MODERNOS,
+    ...CHILE_REGIONES,
   ]
 
   console.log(`\nSeed Chile Histórico v${SEED_VERSION}`)
@@ -40,7 +42,8 @@ async function seed() {
   console.log(`  - Iniciales (curados): ${INITIAL_EVENTS.length}`)
   console.log(`  - Santiago Metropolitana: ${SANTIAGO_EVENTS.length}`)
   console.log(`  - Sitios físicos Santiago: ${SANTIAGO_SITIOS.length}`)
-  console.log(`  - Edificios modernos / gaps: ${SANTIAGO_MODERNOS.length}\n`)
+  console.log(`  - Edificios modernos / gaps: ${SANTIAGO_MODERNOS.length}`)
+  console.log(`  - Resto de Chile (regiones): ${CHILE_REGIONES.length}\n`)
 
   if (reset) {
     console.log('--reset activado: borrando datos previos...')
@@ -77,6 +80,7 @@ async function seed() {
       region: ev.region,
       comuna: ev.comuna ?? null,
       featured: ev.featured ?? false,
+      relatedSlugs: (ev.relatedSlugs ?? null) as never,
       status: 'PUBLISHED' as const,
     }
 

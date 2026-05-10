@@ -8,6 +8,7 @@ import {
   ERA_META,
   REGIONES_CHILE,
 } from '@/lib/categories'
+import { MarkerShape } from './MarkerShape'
 import type { EventCategory, HistoricalEra } from '@/store/map-store'
 
 export function FilterSidebar() {
@@ -84,10 +85,9 @@ export function FilterSidebar() {
                         : 'border-border bg-bg-secondary text-text-secondary hover:border-accent-gold/40'
                     }`}
                   >
-                    <span
-                      className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: meta.color }}
-                    />
+                    <span className="inline-block shrink-0">
+                      <MarkerShape shape={meta.shape} color={meta.color} size={12} />
+                    </span>
                     <span>{meta.label}</span>
                   </button>
                 )

@@ -2030,8 +2030,8 @@ export const SANTIAGO_EVENTS: SeedEvent[] = [
   // PERSONAJES Y CASAS DE ESCRITORES
   // =========================================================================
   {
-    slug: 'casa-isla-negra-neruda',
-    title: 'Casa de Pablo Neruda en Santiago (Sebastiana / Chascona)',
+    slug: 'casa-neruda-santiago-tres-casas',
+    title: 'Las tres casas de Pablo Neruda',
     shortDesc:
       'La Chascona en Bellavista es la principal casa-museo de Pablo Neruda en Santiago.',
     longDesc:

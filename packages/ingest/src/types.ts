@@ -31,5 +31,6 @@ export interface SeedEvent {
   region: string
   comuna?: string
   featured?: boolean
+  relatedSlugs?: string[]
   sources: SeedSource[]
 }

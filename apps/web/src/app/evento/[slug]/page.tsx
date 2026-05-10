@@ -8,6 +8,7 @@ import { SiteFooter } from '@/components/SiteFooter'
 import { EventMediaSlider } from '@/components/event/EventMediaSlider'
 import { EventNarration } from '@/components/event/EventNarration'
 import { ShareButton } from '@/components/event/ShareButton'
+import { RelatedEvents } from '@/components/event/RelatedEvents'
 import { CATEGORY_META, ERA_META, SOURCE_TYPE_META } from '@/lib/categories'
 import { formatYearRange } from '@/lib/format'
 
@@ -155,6 +156,8 @@ export default async function EventPage({ params }: Props) {
             </div>
           </article>
         </div>
+
+        <RelatedEvents slug={event.slug} />
       </main>
       <SiteFooter />
     </>

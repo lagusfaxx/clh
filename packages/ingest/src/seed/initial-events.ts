@@ -83,6 +83,15 @@ export const INITIAL_EVENTS: SeedEvent[] = [
   {
     slug: 'bombardeo-la-moneda-1973',
     title: 'Bombardeo del Palacio de La Moneda',
+    relatedSlugs: [
+      'estadio-nacional-prision-1973',
+      'sitio-londres-38',
+      'sitio-villa-grimaldi',
+      'caso-letelier-1976',
+      'plebiscito-1988',
+      'aniversario-50-golpe-2023',
+      'asume-allende-1970',
+    ],
     shortDesc:
       'El 11 de septiembre de 1973, aviones Hawker Hunter bombardean La Moneda durante el golpe de Estado.',
     longDesc:

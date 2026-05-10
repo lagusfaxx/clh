@@ -3,18 +3,20 @@
  * para que UI y APIs usen los mismos labels e iconos.
  */
 export const CATEGORY_META = {
-  BATALLA: { label: 'Batalla', short: 'B', color: '#8B3A1F' },
-  FUNDACION: { label: 'Fundación', short: 'F', color: '#C9A75C' },
-  DESASTRE_NATURAL: { label: 'Desastre natural', short: 'D', color: '#A04E2A' },
-  PATRIMONIO: { label: 'Patrimonio', short: 'P', color: '#C9A75C' },
-  PUEBLOS_ORIGINARIOS: { label: 'Pueblos originarios', short: 'O', color: '#7B6038' },
-  POLITICA: { label: 'Política', short: 'L', color: '#2C4A5C' },
-  CULTURA: { label: 'Cultura', short: 'A', color: '#9C7B3F' },
-  ECONOMIA: { label: 'Economía', short: 'E', color: '#5C7148' },
-  RELIGION: { label: 'Religión', short: 'R', color: '#6B5840' },
-  TRANSPORTE: { label: 'Transporte', short: 'T', color: '#4A5868' },
-  CIENCIA: { label: 'Ciencia', short: 'C', color: '#3F6B7B' },
+  BATALLA: { label: 'Batalla', short: 'B', color: '#8B3A1F', shape: 'diamond' },
+  FUNDACION: { label: 'Fundación', short: 'F', color: '#C9A75C', shape: 'star' },
+  DESASTRE_NATURAL: { label: 'Desastre natural', short: 'D', color: '#A04E2A', shape: 'triangle' },
+  PATRIMONIO: { label: 'Patrimonio', short: 'P', color: '#C9A75C', shape: 'square' },
+  PUEBLOS_ORIGINARIOS: { label: 'Pueblos originarios', short: 'O', color: '#7B6038', shape: 'circle' },
+  POLITICA: { label: 'Política', short: 'L', color: '#2C4A5C', shape: 'hexagon' },
+  CULTURA: { label: 'Cultura', short: 'A', color: '#9C7B3F', shape: 'circle' },
+  ECONOMIA: { label: 'Economía', short: 'E', color: '#5C7148', shape: 'square' },
+  RELIGION: { label: 'Religión', short: 'R', color: '#6B5840', shape: 'cross' },
+  TRANSPORTE: { label: 'Transporte', short: 'T', color: '#4A5868', shape: 'circle' },
+  CIENCIA: { label: 'Ciencia', short: 'C', color: '#3F6B7B', shape: 'hexagon' },
 } as const
+
+export type CategoryShape = (typeof CATEGORY_META)[keyof typeof CATEGORY_META]['shape']
 
 export const ERA_META = {
   PREHISPANICA: {
