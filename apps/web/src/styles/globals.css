@@ -35,6 +35,15 @@
       'calt' 1,
       'kern' 1;
     -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Targets táctiles mínimos 44px en mobile */
+  @media (hover: none) and (pointer: coarse) {
+    button, a {
+      min-height: 36px;
+    }
   }
 
   ::selection {

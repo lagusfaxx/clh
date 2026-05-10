@@ -37,13 +37,13 @@ export default async function EventosPage() {
   return (
     <>
       <SiteHeader />
-      <main className="container mx-auto max-w-5xl px-4 py-10">
-        <h1 className="font-display text-4xl text-text-primary">Catálogo de eventos</h1>
+      <main className="container mx-auto max-w-5xl px-4 py-6 md:py-10">
+        <h1 className="font-display text-3xl text-text-primary md:text-4xl">Catálogo de eventos</h1>
         <p className="mt-2 text-sm text-text-secondary">
           {events.length} eventos publicados.
         </p>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 md:mt-8 md:gap-4">
           {events.map((ev) => (
             <Link key={ev.id} href={`/evento/${ev.slug}`} className="group">
               <Card className="h-full transition-colors group-hover:border-accent-gold/50">

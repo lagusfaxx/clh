@@ -21,12 +21,12 @@ export function Timeline() {
   }))
 
   return (
-    <div className="absolute inset-x-4 bottom-4 z-10 rounded-sm border border-border bg-bg-card/95 p-4 shadow-paper backdrop-blur md:inset-x-12 md:bottom-6">
+    <div className="absolute inset-x-2 bottom-2 z-10 rounded-sm border border-border bg-bg-card/95 p-3 shadow-paper backdrop-blur md:inset-x-12 md:bottom-6 md:p-4">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <div className="font-display text-sm tracking-wide text-text-secondary">
+        <div className="font-display text-xs tracking-wide text-text-secondary md:text-sm">
           Línea de tiempo
         </div>
-        <div className="flex items-center gap-1 overflow-x-auto">
+        <div className="-mx-1 flex w-full items-center gap-1 overflow-x-auto px-1 md:w-auto">
           {PRESETS.map((p) => (
             <button
               key={p.label}

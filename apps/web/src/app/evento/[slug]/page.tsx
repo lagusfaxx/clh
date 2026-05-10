@@ -65,15 +65,15 @@ export default async function EventPage({ params }: Props) {
   return (
     <>
       <SiteHeader />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6 md:py-8">
         <Link
           href="/"
-          className="mb-6 inline-flex items-center text-sm text-text-secondary hover:text-accent-gold"
+          className="mb-4 inline-flex items-center text-sm text-text-secondary hover:text-accent-gold md:mb-6"
         >
           ← Volver al mapa
         </Link>
 
-        <div className="grid gap-8 lg:grid-cols-12">
+        <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
           <section className="lg:col-span-7">
             <EventMediaSlider
               eventId={event.id}
@@ -93,7 +93,7 @@ export default async function EventPage({ params }: Props) {
               {event.featured && <Badge variant="rust">Destacado</Badge>}
             </div>
 
-            <h1 className="font-display text-4xl leading-tight text-text-primary lg:text-5xl">
+            <h1 className="font-display text-3xl leading-tight text-text-primary md:text-4xl lg:text-5xl">
               {event.title}
             </h1>
 

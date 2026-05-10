@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, Filter, X } from 'lucide-react'
 import { Button, Switch, Input } from '@chile-historico/ui'
 import { useMapStore } from '@/store/map-store'
@@ -11,14 +11,28 @@ import {
 import type { EventCategory, HistoricalEra } from '@/store/map-store'
 
 export function FilterSidebar() {
-  const [open, setOpen] = useState(true)
+  // Cerrada por defecto en mobile, abierta en desktop (md+)
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches) {
+      setOpen(true)
+    }
+  }, [])
 
   const filters = useMapStore()
 
   return (
     <>
+      {/* Backdrop solo en mobile cuando está abierta */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          className="absolute inset-0 z-10 bg-bg-primary/60 backdrop-blur-sm md:hidden"
+        />
+      )}
       <aside
-        className={`absolute left-0 top-0 z-20 h-full w-[320px] transform border-r border-border bg-bg-card/95 backdrop-blur transition-transform duration-300 ${
+        className={`absolute left-0 top-0 z-20 h-full w-[85vw] max-w-[340px] transform border-r border-border bg-bg-card/95 backdrop-blur transition-transform duration-300 md:w-[320px] ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
